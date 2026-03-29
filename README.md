@@ -15,3 +15,38 @@ For the SHA-2 hash functions (i.e. SHA-256 and SHA-512), we rely on OpenSSL. Mak
 ### License
 
 This reference implementation was written by Andreas Hülsing and Joost Rijneveld. All included code is available under the CC0 1.0 Universal Public Domain Dedication.
+
+
+## Delta-XMSS
+
+This fork adds Delta-XMSS, an optimization for XMSS path transmission proposed in:
+
+> **Delta-XMSS: Incremental State Optimization for Post-Quantum Hash-Based Signatures**
+> Antônio A. T. R. André¹, Routo Terada², Victor Takashi Hayashi³, Bryan Kano Ferreira¹
+> ¹Inteli – Instituto de Tecnologia e Liderança, ²IME – USP, ³Escola Politécnica – USP, 2026.
+
+The idea is that two consecutive authentication paths share most of their nodes. Instead of retransmitting the full path, we transmit only the nodes that differ.
+### Files
+
+| File | Description |
+| --- | --- |
+| `delta_xmss.h` | API — `delta_encode`, `delta_decode`, `delta_nu`, helpers |
+| `delta_xmss.c` | Implementation |
+| `test/delta.c` | Benchmark: bytes transferred, encode/decode time (µs), CPU cycles, correctness check |
+
+### Build
+```
+gcc -Wall -g -O3 -I. \
+    -o test/delta \
+    params.c hash.c fips202.c hash_address.c randombytes.c \
+    wots.c xmss.c xmss_core.c xmss_commons.c utils.c \
+    delta_xmss.c test/delta.c \
+    -lcrypto
+```
+
+### Run
+```
+./test/delta 32
+```
+
+Runs the benchmark for 32 consecutive indices with h' = 10. Adjust the argument to test other sequence lengths.

@@ -19,13 +19,13 @@ This reference implementation was written by Andreas Hülsing and Joost Rijnevel
 
 ## Delta-XMSS
 
-This fork adds Delta-XMSS, an optimization for XMSS path transmission proposed in:
-
-> **Delta-XMSS: Incremental State Optimization for Post-Quantum Hash-Based Signatures**
-> Antônio A. T. R. André¹, Routo Terada², Victor Takashi Hayashi³, Bryan Kano Ferreira¹
-> ¹Inteli – Instituto de Tecnologia e Liderança, ²IME – USP, ³Escola Politécnica – USP, 2026.
+This fork adds Delta-XMSS, an optimization for XMSS path transmission.
 
 The idea is that two consecutive authentication paths share most of their nodes. Instead of retransmitting the full path, we transmit only the nodes that differ.
+
+### Enviroment
+Implemented in C (C99), compiled with GCC 13.3 and Ubuntu (WSL2, x86-64) and requires OpenSSL.
+
 ### Files
 
 | File | Description |

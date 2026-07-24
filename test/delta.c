@@ -1,3 +1,35 @@
+
+/*
+ * test/delta.c — Delta-XMSS benchmark.
+ *
+ * Reproduces the experimental claims of the paper "Delta-XMSS:
+ * Incremental State Optimization for Post-Quantum Hash-Based
+ * Signatures" (SBSeg 2026), matching the Experiments section of the
+ * repository README:
+ *
+ *   Claim #1 (transmission reduction): columns XMSS(B) vs Delta(B)
+ *            per transition, and "Reduction" in the Summary.
+ *   Claim #2 (negligible overhead): columns EncCycles/DecCycles and
+ *            the Avg encode / Avg decode lines in the Summary.
+ *   Claim #3 (decoding correctness, Lemma 1): column Match — the path
+ *            reconstructed by delta_decode is compared byte-by-byte
+ *            (memcmp) against the path produced by standard XMSS.
+ *
+ * Usage: ./test/delta [num_sigs]
+ *   Signs num_sigs consecutive indices (default 32) on a fixed
+ *   XMSS-SHA2_10_256 tree (h' = 10, n = 32), producing num_sigs - 1
+ *   transitions. Row "idx" reports the transition idx -> idx+1:
+ *   nu = nu(idx), and Delta(B) = 32*(nu+1) bytes.
+ *
+ * Timing methodology: each encode/decode is repeated TIMING_REPS
+ * times and the average is reported, both in wall-clock microseconds
+ * (CLOCK_MONOTONIC) and in CPU cycles (RDTSC). Note: RDTSC is an
+ * x86 instruction, so this benchmark requires an x86-64 machine (or
+ * x86 emulation). The signing cost baseline reported in the paper
+ * (median of 5,711,700 cycles on an Intel i5-12500H) was measured
+ * separately over the xmss_sign calls.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
